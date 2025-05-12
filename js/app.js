@@ -4,22 +4,33 @@ const GAMES = [
         id: 'addition',
         title: 'הרפתקת החיבור',
         description: 'תרגול חיבור מספרים!',
-        icon: 'assets/images/addition.png',
+        icon: '➕',
+        emoji: true,
         difficulty: 'easy'
     },
     {
         id: 'subtraction',
         title: 'ספארי החיסור',
         description: 'לימוד חיסור מספרים!',
-        icon: 'assets/images/subtraction.png',
+        icon: '➖',
+        emoji: true,
         difficulty: 'easy'
     },
     {
         id: 'number-recognition',
         title: 'נינג\'ה המספרים',
         description: 'שליטה בזיהוי מספרים!',
-        icon: 'assets/images/numbers.png',
+        icon: '🔢',
+        emoji: true,
         difficulty: 'easy'
+    },
+    {
+        id: 'series',
+        title: 'מסע הסדרות',
+        description: 'תרגול סדרות מספרים!',
+        icon: '📈',
+        emoji: true,
+        difficulty: 'medium'
     }
 ];
 
@@ -42,6 +53,118 @@ const elements = {
     backToStudentButton: document.getElementById('back-to-student'),
     gameGrid: document.querySelector('.game-grid')
 };
+
+// Gradient background utility
+const GRADIENT_CLASSES = [
+    'bg-gradient-1',
+    'bg-gradient-2',
+    'bg-gradient-3',
+    'bg-gradient-4',
+    'bg-gradient-5',
+    'bg-gradient-6',
+    'bg-gradient-7'
+];
+let currentGradientIdx = 0;
+let exerciseCounter = 0;
+const EXERCISES_PER_BG = 3; // Change background every 3 exercises
+
+function setGradientBackground(idx) {
+    document.body.classList.remove(...GRADIENT_CLASSES);
+    document.body.classList.add(GRADIENT_CLASSES[idx]);
+}
+
+function nextGradientBackground() {
+    currentGradientIdx = (currentGradientIdx + 1) % GRADIENT_CLASSES.length;
+    setGradientBackground(currentGradientIdx);
+}
+
+// Call this after each exercise is completed
+function onExerciseCompleted() {
+    exerciseCounter++;
+    if (exerciseCounter % EXERCISES_PER_BG === 0) {
+        nextGradientBackground();
+    }
+}
+
+// Set initial gradient on load
+setGradientBackground(currentGradientIdx);
+
+// Navigation and Back Button Logic
+const backButton = document.getElementById('back-button');
+const navWarningModal = document.getElementById('nav-warning-modal');
+const cancelNavBtn = document.getElementById('cancel-nav');
+const confirmNavBtn = document.getElementById('confirm-nav');
+
+let inMainMenu = true;
+let pendingNavEvent = null;
+
+function showBackButton(show) {
+    backButton.style.display = show ? '' : 'none';
+}
+
+function goToMainMenu() {
+    // Show main menu, hide game container
+    elements.gameMenu.classList.remove('hidden');
+    elements.gameContainer.classList.add('hidden');
+    inMainMenu = true;
+    showBackButton(false);
+    history.replaceState({page: 'main'}, '', location.pathname);
+}
+
+function goToGame() {
+    inMainMenu = false;
+    showBackButton(true);
+    history.pushState({page: 'game'}, '', location.pathname + '#game');
+}
+
+// Back button click
+backButton.addEventListener('click', () => {
+    goToMainMenu();
+});
+
+// Intercept browser back/forward
+window.addEventListener('popstate', (e) => {
+    if (inMainMenu) {
+        // Already in main menu, show warning
+        showNavWarning(e);
+    } else {
+        goToMainMenu();
+    }
+});
+
+// Intercept refresh/navigation away
+window.addEventListener('beforeunload', (e) => {
+    if (inMainMenu) {
+        e.preventDefault();
+        e.returnValue = '';
+        showNavWarning(e);
+        return '';
+    }
+});
+
+function showNavWarning(event) {
+    navWarningModal.classList.remove('hidden');
+    pendingNavEvent = event;
+}
+
+function hideNavWarning() {
+    navWarningModal.classList.add('hidden');
+    pendingNavEvent = null;
+}
+
+cancelNavBtn.addEventListener('click', () => {
+    hideNavWarning();
+});
+
+confirmNavBtn.addEventListener('click', () => {
+    hideNavWarning();
+    if (pendingNavEvent && pendingNavEvent.type === 'beforeunload') {
+        window.removeEventListener('beforeunload', beforeUnloadHandler);
+        location.reload();
+    } else {
+        history.back();
+    }
+});
 
 // Initialize the application
 function init() {
@@ -73,7 +196,10 @@ function saveProgress() {
 function renderGameMenu() {
     elements.gameGrid.innerHTML = GAMES.map(game => `
         <div class="game-card" data-game-id="${game.id}">
-            <img src="${game.icon}" alt="${game.title}">
+            ${game.emoji ? 
+                `<div class="game-emoji-icon">${game.icon}</div>` : 
+                `<img src="${game.icon}" alt="${game.title}">`
+            }
             <h3>${game.title}</h3>
             <p>${game.description}</p>
             <div class="progress-indicator">
@@ -81,6 +207,9 @@ function renderGameMenu() {
             </div>
         </div>
     `).join('');
+    inMainMenu = true;
+    showBackButton(false);
+    history.replaceState({page: 'main'}, '', location.pathname);
 }
 
 // Get progress indicator for a game
@@ -117,10 +246,21 @@ function startGame(gameId) {
     elements.gameContainer.classList.remove('hidden');
     
     // Initialize the specific game
-    const game = GAMES.find(g => g.id === gameId);
-    if (game && window[`init${gameId.charAt(0).toUpperCase() + gameId.slice(1)}Game`]) {
-        window[`init${gameId.charAt(0).toUpperCase() + gameId.slice(1)}Game`]();
+    const gameModules = {
+        'addition': AdditionGame,
+        'subtraction': SubtractionGame,
+        'number-recognition': NumberRecognitionGame,
+        'series': SeriesGame
+    };
+    
+    // If the game module exists, initialize it
+    if (gameModules[gameId]) {
+        gameModules[gameId].init(elements.gameContainer);
+    } else {
+        console.error(`Game module not found: ${gameId}`);
     }
+    
+    goToGame();
 }
 
 // Toggle between parent and student modes
@@ -174,6 +314,19 @@ function updateGameProgress(gameId, progress) {
     saveProgress();
     renderGameMenu();
 }
+
+// On load, set initial state
+document.addEventListener('DOMContentLoaded', () => {
+    showBackButton(true);
+    if (location.hash === '#game') {
+        inMainMenu = false;
+        showBackButton(true);
+    } else {
+        inMainMenu = true;
+        showBackButton(false);
+    }
+    history.replaceState({page: inMainMenu ? 'main' : 'game'}, '', location.pathname + (inMainMenu ? '' : '#game'));
+});
 
 // Initialize the application when the DOM is loaded
 document.addEventListener('DOMContentLoaded', init); 

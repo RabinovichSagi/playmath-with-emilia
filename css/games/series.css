@@ -1,0 +1,77 @@
+.series-input {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.series-input label {
+    margin-left: 10px;
+    font-size: 1.2em;
+}
+
+.series-input input {
+    width: 60px;
+    padding: 5px;
+    font-size: 1.2em;
+    text-align: center;
+}
+.question-rtl {
+    direction: rtl;
+}
+.question {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 0;
+    font-size: 1.5em;
+}
+
+.series-number {
+    padding: 5px 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+}
+.series-input {
+    width: 60px;
+    padding: 5px;
+    font-size: 1.2em;
+    text-align: center;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+}
+
+.series-input:disabled {
+    background-color: #f0f0f0;
+    cursor: not-allowed;
+}
+
+.series-input.correct {
+    border-color: #4CAF50;
+    background-color: #E8F5E9;
+}
+
+.series-input.wrong {
+    border-color: #F44336;
+    background-color: #FFEBEE;
+}
+
+.check-button {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    font-size: 1.2em;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.check-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.check-button:hover:not(:disabled) {
+    background-color: #45a049;
+} 

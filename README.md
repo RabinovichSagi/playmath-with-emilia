@@ -37,26 +37,9 @@ PlayMath with Emilia is a modular web application that provides a collection of 
 - **Data Storage**: Local Storage (for offline functionality)
 - **No External Dependencies**: Pure vanilla implementation for simplicity and performance
 
-## Project Structure
+## Implementation Guidelines
+Colors - see ./color-palette.md
 
-```
-playmath-with-emilia/
-├── index.html              # Main entry point
-├── css/
-│   ├── style.css          # Main styles
-│   ├── menu.css           # Menu page styles
-│   ├── games/             # Game-specific styles
-│   └── parent/            # Parent interface styles
-├── js/
-│   ├── app.js            # Main application logic
-│   ├── storage.js        # Data persistence
-│   ├── games/            # Individual game modules
-│   └── parent/           # Parent interface logic
-├── assets/
-│   ├── images/           # Game assets and icons
-│   └── sounds/           # Sound effects
-└── README.md
-```
 
 ## Game Modules
 
@@ -67,28 +50,16 @@ Each game module will be self-contained and follow a consistent interface:
 - Performance metrics
 - Parent controls
 
-## Development Roadmap
+### Game Flow Requirements
+- Each question allows for multiple attempts:
+  1. First attempt: Check answer
+  2. If wrong: "נסה שוב" (Try Again) button appears, allowing a second attempt
+  3. If wrong again: "הצג תשובה" (Show Answer) button appears
+  4. After showing answer: "המשך" (Continue) button appears to move to next question
+- Immediate feedback on answers (correct/incorrect)
+- Clear visual indication of correct/incorrect answers
+- Progress tracking between attempts
 
-### Phase 1: Core Infrastructure
-- [x] Project setup and structure
-- [ ] Basic menu system
-- [ ] Parent/Student interface separation
-- [ ] Progress tracking system
-
-### Phase 2: Initial Games
-- [ ] Addition and Subtraction Game
-- [ ] Number Recognition Game
-- [ ] Basic Geometry Game
-
-### Phase 3: Enhanced Features
-- [ ] Achievement system
-- [ ] Detailed progress reports
-- [ ] Custom difficulty settings
-
-### Phase 4: Additional Games
-- [ ] Time and Money Game
-- [ ] Measurement Game
-- [ ] Pattern Recognition Game
 
 ## Getting Started
 

@@ -3,7 +3,9 @@
 const STORAGE_KEYS = {
     PROGRESS: 'playmathProgress',
     SETTINGS: 'playmathSettings',
-    ACHIEVEMENTS: 'playmathAchievements'
+    ACHIEVEMENTS: 'playmathAchievements',
+    GAME_SCORES: 'playmathGameScores',
+    GAME_LEVELS: 'playmathGameLevels'
 };
 
 // Default settings
@@ -114,8 +116,39 @@ function getGameSettings(gameId) {
     return settings.games[gameId] || DEFAULT_SETTINGS.games[gameId];
 }
 
-// Export functions
-window.storage = {
+// Save game score
+function saveGameScore(gameId, score) {
+    const scores = JSON.parse(localStorage.getItem(STORAGE_KEYS.GAME_SCORES) || '{}');
+    scores[gameId] = score;
+    localStorage.setItem(STORAGE_KEYS.GAME_SCORES, JSON.stringify(scores));
+}
+
+// Get game score
+function getGameScore(gameId) {
+    const scores = JSON.parse(localStorage.getItem(STORAGE_KEYS.GAME_SCORES) || '{}');
+    return scores[gameId] || 0;
+}
+
+// Save game level
+function saveGameLevel(gameId, level) {
+    const levels = JSON.parse(localStorage.getItem(STORAGE_KEYS.GAME_LEVELS) || '{}');
+    levels[gameId] = level;
+    localStorage.setItem(STORAGE_KEYS.GAME_LEVELS, JSON.stringify(levels));
+}
+
+// Get game level
+function getGameLevel(gameId) {
+    const levels = JSON.parse(localStorage.getItem(STORAGE_KEYS.GAME_LEVELS) || '{}');
+    return levels[gameId] || 1;
+}
+
+// Get settings
+function getSettings() {
+    return loadSettings();
+}
+
+// Export to Storage namespace
+const Storage = {
     loadSettings,
     saveSettings,
     loadProgress,
@@ -127,5 +160,10 @@ window.storage = {
     addAchievement,
     getAchievements,
     updateGameSettings,
-    getGameSettings
+    getGameSettings,
+    saveGameScore,
+    getGameScore,
+    saveGameLevel,
+    getGameLevel,
+    getSettings
 }; 

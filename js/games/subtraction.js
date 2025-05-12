@@ -1,7 +1,7 @@
 /**
- * Addition Game Module
+ * Subtraction Game Module
  */
-const AdditionGame = (function() {
+const SubtractionGame = (function() {
     // Private variables
     let currentLevel = 1;
     let score = 0;
@@ -18,9 +18,9 @@ const AdditionGame = (function() {
     
     // Game configuration based on level
     const levels = {
-        1: { minNumber: 1, maxNumber: 5 },
-        2: { minNumber: 1, maxNumber: 10 },
-        3: { minNumber: 5, maxNumber: 20 }
+        1: { minNumber: 1, maxNumber: 5, minResult: 0 },
+        2: { minNumber: 1, maxNumber: 10, minResult: 0 },
+        3: { minNumber: 5, maxNumber: 20, minResult: 0 }
     };
     
     // Initialize the game
@@ -31,7 +31,7 @@ const AdditionGame = (function() {
         createGameUI();
         
         // Load saved level if available
-        const savedLevel = Storage.getGameLevel('addition');
+        const savedLevel = Storage.getGameLevel('subtraction');
         if (savedLevel) {
             currentLevel = savedLevel;
         }
@@ -45,31 +45,31 @@ const AdditionGame = (function() {
         gameContainer.innerHTML = `
             <div class="game-header">
                 <div class="game-info">
-                    <span>רמה: <span id="addition-level">1</span></span>
-                    <span>ניקוד: <span id="addition-score">0</span></span>
+                    <span>רמה: <span id="subtraction-level">1</span></span>
+                    <span>ניקוד: <span id="subtraction-score">0</span></span>
                 </div>
                 <div class="progress-bar">
-                    <div id="addition-progress" class="progress"></div>
+                    <div id="subtraction-progress" class="progress"></div>
                 </div>
             </div>
             <div class="game-content">
-                <div id="addition-question" class="question"></div>
-                <div id="addition-options" class="options"></div>
+                <div id="subtraction-question" class="question"></div>
+                <div id="subtraction-options" class="options"></div>
             </div>
             <div class="game-footer">
-                <button id="addition-back" class="back-button">חזרה לתפריט</button>
+                <button id="subtraction-back" class="back-button">חזרה לתפריט</button>
             </div>
         `;
         
         // Get DOM elements
-        questionElement = document.getElementById('addition-question');
-        optionsContainer = document.getElementById('addition-options');
-        scoreElement = document.getElementById('addition-score');
-        levelElement = document.getElementById('addition-level');
-        progressElement = document.getElementById('addition-progress');
+        questionElement = document.getElementById('subtraction-question');
+        optionsContainer = document.getElementById('subtraction-options');
+        scoreElement = document.getElementById('subtraction-score');
+        levelElement = document.getElementById('subtraction-level');
+        progressElement = document.getElementById('subtraction-progress');
         
         // Add event listener for back button
-        document.getElementById('addition-back').addEventListener('click', () => {
+        document.getElementById('subtraction-back').addEventListener('click', () => {
             // Show game menu and hide game container
             document.getElementById('game-menu').classList.remove('hidden');
             document.getElementById('game-container').classList.add('hidden');
@@ -84,13 +84,13 @@ const AdditionGame = (function() {
         questionCount = 0;
         
         // Save current level
-        Storage.saveGameLevel('addition', level);
+        Storage.saveGameLevel('subtraction', level);
         
         // Generate first question
         generateQuestion();
     }
     
-    // Generate an addition question
+    // Generate a subtraction question
     function generateQuestion() {
         const levelConfig = levels[currentLevel];
         
@@ -104,14 +104,17 @@ const AdditionGame = (function() {
             return;
         }
         
-        // Generate numbers for addition
-        const num1 = Math.floor(Math.random() * (levelConfig.maxNumber - levelConfig.minNumber + 1)) + levelConfig.minNumber;
-        const num2 = Math.floor(Math.random() * (levelConfig.maxNumber - levelConfig.minNumber + 1)) + levelConfig.minNumber;
+        // Generate numbers for subtraction
+        let num1, num2;
+        do {
+            num1 = Math.floor(Math.random() * (levelConfig.maxNumber - levelConfig.minNumber + 1)) + levelConfig.minNumber;
+            num2 = Math.floor(Math.random() * (num1 - levelConfig.minResult + 1));
+        } while (num1 - num2 < levelConfig.minResult);
         
-        const correctAnswer = num1 + num2;
+        const correctAnswer = num1 - num2;
         
         // Display question
-        questionElement.textContent = `${num1} + ${num2} = ?`;
+        questionElement.textContent = `${num1} - ${num2} = ?`;
         
         // Generate options
         const options = generateOptions(correctAnswer, levelConfig);
@@ -127,8 +130,8 @@ const AdditionGame = (function() {
         
         // Generate 3 wrong options
         while (options.length < 4) {
-            const min = Math.max(0, correctAnswer - 5);
-            const max = correctAnswer + 5;
+            const min = Math.max(levelConfig.minResult, correctAnswer - 5);
+            const max = Math.min(levelConfig.maxNumber, correctAnswer + 5);
             const wrongAnswer = Math.floor(Math.random() * (max - min + 1)) + min;
             
             if (wrongAnswer !== correctAnswer && !options.includes(wrongAnswer)) {
@@ -183,7 +186,7 @@ const AdditionGame = (function() {
         });
         
         // Save score
-        Storage.saveGameScore('addition', score);
+        Storage.saveGameScore('subtraction', score);
         
         // Wait before next question
         setTimeout(() => {

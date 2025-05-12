@@ -6,19 +6,23 @@
     <title>משחקי חשבון עם אמיליה</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/menu.css">
+    <link rel="stylesheet" href="css/games/series.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="app">
+        <header id="main-header">
+            <button id="back-button" class="back-button" style="display:none">⬅ חזרה</button>
+            <h1>משחקי חשבון עם אמיליה</h1>
+            <div class="user-info">
+                <span id="student-name">אמיליה</span>
+                <div id="achievement-badge"></div>
+            </div>
+        </header>
         <!-- Student Interface -->
         <div id="student-interface" class="interface">
-            <header>
-                <h1>משחקי חשבון עם אמיליה</h1>
-                <div class="user-info">
-                    <span id="student-name">אמיליה</span>
-                    <div id="achievement-badge"></div>
-                </div>
-            </header>
-
             <main>
                 <div id="game-menu" class="menu-container">
                     <h2>בחרי משחק</h2>
@@ -26,24 +30,20 @@
                         <!-- Game cards will be dynamically added here -->
                     </div>
                 </div>
-
                 <div id="game-container" class="hidden">
                     <!-- Game content will be loaded here -->
                 </div>
             </main>
-
             <footer>
                 <button id="parent-mode" class="admin-button">מצב הורים</button>
             </footer>
         </div>
-
         <!-- Parent Interface -->
         <div id="parent-interface" class="interface hidden">
             <header>
                 <h1>לוח בקרה להורים</h1>
                 <button id="back-to-student" class="admin-button">חזרה למשחקים</button>
             </header>
-
             <main>
                 <div class="dashboard-container">
                     <section class="stats-section">
@@ -52,7 +52,6 @@
                             <!-- Progress statistics will be displayed here -->
                         </div>
                     </section>
-
                     <section class="settings-section">
                         <h2>הגדרות משחק</h2>
                         <div id="game-settings">
@@ -61,6 +60,14 @@
                     </section>
                 </div>
             </main>
+        </div>
+    </div>
+    <!-- Navigation Warning Modal -->
+    <div id="nav-warning-modal" class="modal hidden">
+        <div class="modal-content">
+            <p>האם את בטוחה שברצונך לעזוב? כל ההתקדמות שלא נשמרה תיאבד.</p>
+            <button id="cancel-nav" class="secondary-button">ביטול</button>
+            <button id="confirm-nav" class="primary-button">עזיבה</button>
         </div>
     </div>
 
@@ -72,6 +79,7 @@
     <script src="js/games/addition.js"></script>
     <script src="js/games/subtraction.js"></script>
     <script src="js/games/number-recognition.js"></script>
+    <script src="js/games/series.js"></script>
     
     <!-- Parent Interface Scripts -->
     <script src="js/parent/dashboard.js"></script>

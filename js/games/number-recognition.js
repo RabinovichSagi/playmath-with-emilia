@@ -1,7 +1,7 @@
 /**
- * Addition Game Module
+ * Number Recognition Game Module
  */
-const AdditionGame = (function() {
+const NumberRecognitionGame = (function() {
     // Private variables
     let currentLevel = 1;
     let score = 0;
@@ -20,7 +20,7 @@ const AdditionGame = (function() {
     const levels = {
         1: { minNumber: 1, maxNumber: 5 },
         2: { minNumber: 1, maxNumber: 10 },
-        3: { minNumber: 5, maxNumber: 20 }
+        3: { minNumber: 1, maxNumber: 20 }
     };
     
     // Initialize the game
@@ -31,7 +31,7 @@ const AdditionGame = (function() {
         createGameUI();
         
         // Load saved level if available
-        const savedLevel = Storage.getGameLevel('addition');
+        const savedLevel = Storage.getGameLevel('number-recognition');
         if (savedLevel) {
             currentLevel = savedLevel;
         }
@@ -45,31 +45,31 @@ const AdditionGame = (function() {
         gameContainer.innerHTML = `
             <div class="game-header">
                 <div class="game-info">
-                    <span>רמה: <span id="addition-level">1</span></span>
-                    <span>ניקוד: <span id="addition-score">0</span></span>
+                    <span>רמה: <span id="number-level">1</span></span>
+                    <span>ניקוד: <span id="number-score">0</span></span>
                 </div>
                 <div class="progress-bar">
-                    <div id="addition-progress" class="progress"></div>
+                    <div id="number-progress" class="progress"></div>
                 </div>
             </div>
             <div class="game-content">
-                <div id="addition-question" class="question"></div>
-                <div id="addition-options" class="options"></div>
+                <div id="number-question" class="question"></div>
+                <div id="number-options" class="options"></div>
             </div>
             <div class="game-footer">
-                <button id="addition-back" class="back-button">חזרה לתפריט</button>
+                <button id="number-back" class="back-button">חזרה לתפריט</button>
             </div>
         `;
         
         // Get DOM elements
-        questionElement = document.getElementById('addition-question');
-        optionsContainer = document.getElementById('addition-options');
-        scoreElement = document.getElementById('addition-score');
-        levelElement = document.getElementById('addition-level');
-        progressElement = document.getElementById('addition-progress');
+        questionElement = document.getElementById('number-question');
+        optionsContainer = document.getElementById('number-options');
+        scoreElement = document.getElementById('number-score');
+        levelElement = document.getElementById('number-level');
+        progressElement = document.getElementById('number-progress');
         
         // Add event listener for back button
-        document.getElementById('addition-back').addEventListener('click', () => {
+        document.getElementById('number-back').addEventListener('click', () => {
             // Show game menu and hide game container
             document.getElementById('game-menu').classList.remove('hidden');
             document.getElementById('game-container').classList.add('hidden');
@@ -84,13 +84,13 @@ const AdditionGame = (function() {
         questionCount = 0;
         
         // Save current level
-        Storage.saveGameLevel('addition', level);
+        Storage.saveGameLevel('number-recognition', level);
         
         // Generate first question
         generateQuestion();
     }
     
-    // Generate an addition question
+    // Generate a number recognition question
     function generateQuestion() {
         const levelConfig = levels[currentLevel];
         
@@ -104,21 +104,34 @@ const AdditionGame = (function() {
             return;
         }
         
-        // Generate numbers for addition
-        const num1 = Math.floor(Math.random() * (levelConfig.maxNumber - levelConfig.minNumber + 1)) + levelConfig.minNumber;
-        const num2 = Math.floor(Math.random() * (levelConfig.maxNumber - levelConfig.minNumber + 1)) + levelConfig.minNumber;
+        // Generate number for recognition
+        const number = Math.floor(Math.random() * (levelConfig.maxNumber - levelConfig.minNumber + 1)) + levelConfig.minNumber;
         
-        const correctAnswer = num1 + num2;
-        
-        // Display question
-        questionElement.textContent = `${num1} + ${num2} = ?`;
+        // Display question - show number in text form
+        questionElement.innerHTML = `<span class="number-text">איזה מספר זה?</span><div class="number-display">${numberToHebrewText(number)}</div>`;
         
         // Generate options
-        const options = generateOptions(correctAnswer, levelConfig);
-        displayOptions(options, correctAnswer);
+        const options = generateOptions(number, levelConfig);
+        displayOptions(options, number);
         
         // Increment question count
         questionCount++;
+    }
+    
+    // Convert number to Hebrew text
+    function numberToHebrewText(num) {
+        const hebrewNumbers = [
+            'אפס', 'אחת', 'שתיים', 'שלוש', 'ארבע', 'חמש',
+            'שש', 'שבע', 'שמונה', 'תשע', 'עשר', 'אחת עשרה',
+            'שתים עשרה', 'שלוש עשרה', 'ארבע עשרה', 'חמש עשרה',
+            'שש עשרה', 'שבע עשרה', 'שמונה עשרה', 'תשע עשרה', 'עשרים'
+        ];
+        
+        if (num <= 20) {
+            return hebrewNumbers[num];
+        } else {
+            return num.toString(); // Fallback for larger numbers
+        }
     }
     
     // Generate answer options
@@ -127,11 +140,9 @@ const AdditionGame = (function() {
         
         // Generate 3 wrong options
         while (options.length < 4) {
-            const min = Math.max(0, correctAnswer - 5);
-            const max = correctAnswer + 5;
-            const wrongAnswer = Math.floor(Math.random() * (max - min + 1)) + min;
+            const wrongAnswer = Math.floor(Math.random() * (levelConfig.maxNumber - levelConfig.minNumber + 1)) + levelConfig.minNumber;
             
-            if (wrongAnswer !== correctAnswer && !options.includes(wrongAnswer)) {
+            if (!options.includes(wrongAnswer)) {
                 options.push(wrongAnswer);
             }
         }
@@ -183,7 +194,7 @@ const AdditionGame = (function() {
         });
         
         // Save score
-        Storage.saveGameScore('addition', score);
+        Storage.saveGameScore('number-recognition', score);
         
         // Wait before next question
         setTimeout(() => {
