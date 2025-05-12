@@ -1,0 +1,123 @@
+.game-interface {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.game-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.score-display {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    margin-top: 1rem;
+}
+
+.problem-container {
+    text-align: center;
+    margin: 2rem 0;
+}
+
+.problem {
+    font-size: 2.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.problem input {
+    width: 80px;
+    height: 60px;
+    font-size: 2rem;
+    text-align: center;
+    border: 3px solid var(--secondary-color);
+    border-radius: var(--border-radius);
+    padding: 0.5rem;
+}
+
+.problem input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2);
+}
+
+.operator, .equals {
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+.feedback {
+    text-align: center;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin-top: 1rem;
+    font-size: 1.2rem;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.feedback.success {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.feedback.error {
+    background-color: var(--error-color);
+    color: white;
+}
+
+.feedback.complete {
+    background-color: var(--secondary-color);
+    color: white;
+    font-size: 1.5rem;
+}
+
+/* Animations */
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.feedback.success {
+    animation: bounce 0.5s ease;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .game-interface {
+        padding: 1rem;
+    }
+
+    .problem {
+        font-size: 2rem;
+    }
+
+    .problem input {
+        width: 60px;
+        height: 50px;
+        font-size: 1.5rem;
+    }
+
+    .controls {
+        flex-direction: column;
+    }
+
+    .controls button {
+        width: 100%;
+    }
+} 

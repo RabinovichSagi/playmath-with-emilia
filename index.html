@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>משחקי חשבון עם אמיליה</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/menu.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Student Interface -->
+        <div id="student-interface" class="interface">
+            <header>
+                <h1>משחקי חשבון עם אמיליה</h1>
+                <div class="user-info">
+                    <span id="student-name">אמיליה</span>
+                    <div id="achievement-badge"></div>
+                </div>
+            </header>
+
+            <main>
+                <div id="game-menu" class="menu-container">
+                    <h2>בחרי משחק</h2>
+                    <div class="game-grid">
+                        <!-- Game cards will be dynamically added here -->
+                    </div>
+                </div>
+
+                <div id="game-container" class="hidden">
+                    <!-- Game content will be loaded here -->
+                </div>
+            </main>
+
+            <footer>
+                <button id="parent-mode" class="admin-button">מצב הורים</button>
+            </footer>
+        </div>
+
+        <!-- Parent Interface -->
+        <div id="parent-interface" class="interface hidden">
+            <header>
+                <h1>לוח בקרה להורים</h1>
+                <button id="back-to-student" class="admin-button">חזרה למשחקים</button>
+            </header>
+
+            <main>
+                <div class="dashboard-container">
+                    <section class="stats-section">
+                        <h2>סקירת התקדמות</h2>
+                        <div id="progress-stats">
+                            <!-- Progress statistics will be displayed here -->
+                        </div>
+                    </section>
+
+                    <section class="settings-section">
+                        <h2>הגדרות משחק</h2>
+                        <div id="game-settings">
+                            <!-- Game settings will be displayed here -->
+                        </div>
+                    </section>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Core Scripts -->
+    <script src="js/app.js"></script>
+    <script src="js/storage.js"></script>
+    
+    <!-- Game Modules -->
+    <script src="js/games/addition.js"></script>
+    <script src="js/games/subtraction.js"></script>
+    <script src="js/games/number-recognition.js"></script>
+    
+    <!-- Parent Interface Scripts -->
+    <script src="js/parent/dashboard.js"></script>
+    <script src="js/parent/settings.js"></script>
+</body>
+</html> 
