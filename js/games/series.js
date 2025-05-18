@@ -23,16 +23,16 @@ const SeriesGame = (function() {
     
     // Game configuration based on level
     const levels = {
-        1: { minNumber: 0, maxNumber: 10, skipSteps: [1, 2] },
-        2: { minNumber: 0, maxNumber: 20, skipSteps: [1, 2] },
-        3: { minNumber: 0, maxNumber: 20, skipSteps: [1, 2, 5] },
-        4: { minNumber: 0, maxNumber: 50, skipSteps: [1, 2, 5, 10] },
-        5: { minNumber: 0, maxNumber: 100, skipSteps: [1, 2, 5, 10] },
-        6: { minNumber: 0, maxNumber: 100, skipSteps: [1, 2, 5, 10] },
-        7: { minNumber: 0, maxNumber: 100, skipSteps: [1, 2, 5, 10] },
-        8: { minNumber: 0, maxNumber: 100, skipSteps: [1, 2, 3, 4, 5, 10] },
-        9: { minNumber: 0, maxNumber: 100, skipSteps: [1, 2, 3, 4, 5, 10] },
-        10: { minNumber: 0, maxNumber: 100, skipSteps: [1, 2, 3, 4, 5, 10] },
+        1: { minNumber: 0, maxNumber: 10, skipSteps: [1, 2], seriesLength: 6 },
+        2: { minNumber: 0, maxNumber: 20, skipSteps: [1, 2], seriesLength: 6 },
+        3: { minNumber: 0, maxNumber: 20, skipSteps: [1, 2, 5], seriesLength: 6 },
+        4: { minNumber: 0, maxNumber: 50, skipSteps: [1, 2, 5, 10], seriesLength: 6 },
+        5: { minNumber: 0, maxNumber: 100, skipSteps: [1, 2, 5, 10], seriesLength: 6 },
+        6: { minNumber: 0, maxNumber: 100, skipSteps: [1, 2, 5, 10], seriesLength: 6 },
+        7: { minNumber: 0, maxNumber: 100, skipSteps: [1, 2, 5, 10], seriesLength: 6 },
+        8: { minNumber: 0, maxNumber: 100, skipSteps: [1, 2, 3, 4, 5, 10], seriesLength: 6 },
+        9: { minNumber: 0, maxNumber: 100, skipSteps: [1, 2, 3, 4, 5, 10], seriesLength: 6 },
+        10: { minNumber: 0, maxNumber: 100, skipSteps: [1, 2, 3, 4, 5, 10], seriesLength: 6 },
     };
     
     // Initialize the game
@@ -160,10 +160,35 @@ const SeriesGame = (function() {
         
         // Generate series
         const skipStep = levelConfig.skipSteps[Math.floor(Math.random() * levelConfig.skipSteps.length)];
-        const startNumber = Math.floor(Math.random() * (levelConfig.maxNumber - skipStep * 5));
-        const series = [];
+        const seriesLength = levelConfig.seriesLength;
         
-        for (let i = 0; i < 6; i++) {
+        // Calculate valid range for start number
+        // We need to ensure that: startNumber + (seriesLength-1) * skipStep <= maxNumber
+        // and startNumber >= minNumber
+        const maxPossibleStart = levelConfig.maxNumber - ((seriesLength - 1) * skipStep);
+        const minPossibleStart = levelConfig.minNumber;
+        
+        // If maxPossibleStart is less than minNumber, we need to adjust the skip step
+        if (maxPossibleStart < minPossibleStart) {
+            // Find a valid skip step that works with the constraints
+            const validSkipSteps = levelConfig.skipSteps.filter(step => 
+                levelConfig.minNumber + ((seriesLength - 1) * step) <= levelConfig.maxNumber
+            );
+            
+            if (validSkipSteps.length === 0) {
+                // If no valid skip steps, use the smallest one and adjust maxNumber
+                skipStep = levelConfig.skipSteps[0];
+            } else {
+                skipStep = validSkipSteps[Math.floor(Math.random() * validSkipSteps.length)];
+            }
+        }
+        
+        // Generate start number within valid range
+        const startNumber = Math.floor(Math.random() * (maxPossibleStart - minPossibleStart + 1)) + minPossibleStart;
+        
+        // Generate the series
+        const series = [];
+        for (let i = 0; i < seriesLength; i++) {
             series.push(startNumber + (i * skipStep));
         }
         
@@ -172,7 +197,7 @@ const SeriesGame = (function() {
         const missingIndices = [];
         
         while (missingIndices.length < missingCount) {
-            const index = Math.floor(Math.random() * 6);
+            const index = Math.floor(Math.random() * seriesLength);
             if (!missingIndices.includes(index)) {
                 missingIndices.push(index);
             }
